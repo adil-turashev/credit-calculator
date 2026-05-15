@@ -1,12 +1,7 @@
 package org.example.credit4.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -23,23 +18,22 @@ public class ScheduleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", nullable = false)
-    @ToString.Exclude
     private CreditRequestEntity request;
 
+    @Column(name = "month_number")
     private Integer monthNumber;
 
     @Column(precision = 19, scale = 2)
     private BigDecimal interest;
 
-    @Column(precision = 19, scale = 2)
+    @Column(name = "principal_part", precision = 19, scale = 2)
     private BigDecimal principalPart;
 
     @Column(precision = 19, scale = 2)
     private BigDecimal payment;
 
-    @Column(precision = 19, scale = 2)
+    @Column(name = "balance_after", precision = 19, scale = 2)
     private BigDecimal balanceAfter;
 }
-
