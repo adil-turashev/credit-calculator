@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Результат расчёта</title>
+</head>
+<body>
+<h2>Результат</h2>
+
+<p><b>ФИО:</b> <span th:text="${result.fullName}"></span></p>
+<p><b>Телефон:</b> <span th:text="${result.phone}"></span></p>
+<p><b>Сумма кредита:</b> <span th:text="${result.principal}"></span></p>
+<p><b>Срок:</b> <span th:text="${result.months}"></span> мес.</p>
+
+<p>
+    <b>Дата и время запроса:</b>
+    <span th:text="${#temporals.format(result.requestedAt, 'dd.MM.yyyy HH:mm:ss.SSSS')}"></span>
+</p>
+<p><b>Месячная ставка:</b> <span th:text="${result.monthlyRate}"></span></p>
+<p><b>Ежемесячный платёж:</b> <span th:text="${result.monthlyPayment}"></span></p>
+<p><b>Итого к оплате:</b> <span th:text="${result.totalPaid}"></span></p>
+
+<h3>График платежей</h3>
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>Месяц</th>
+        <th>Проценты</th>
+        <th>Основной долг</th>
+        <th>Платёж</th>
+        <th>Остаток</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="row : ${result.schedule}">
+        <td th:text="${row.monthNumber}"></td>
+        <td th:text="${row.interest}"></td>
+        <td th:text="${row.principalPart}"></td>
+        <td th:text="${row.payment}"></td>
+        <td th:text="${row.balanceAfter}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{/}">Назад</a>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>История расчетов</title>
+</head>
+<body>
+<h2>Ваша история расчетов</h2>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Дата</th>
+        <th>ФИО</th>
+        <th>Телефон</th>
+        <th>Сумма</th>
+        <th>Срок</th>
+        <th>Платёж</th>
+        <th>Итого</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="req : ${requests}">
+        <td th:text="${req.id}"></td>
+        <td th:text="${#temporals.format(req.requestedAt, 'dd.MM.yyyy HH:mm:ss')}"></td>
+        <td th:text="${req.fullName}"></td>
+        <td th:text="${req.phone}"></td>
+        <td th:text="${req.principal}"></td>
+        <td th:text="${req.months}"></td>
+        <td th:text="${req.monthlyPayment}"></td>
+        <td th:text="${req.totalPaid}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{/calculator}">Назад к калькулятору</a>
+</body>
+</html>

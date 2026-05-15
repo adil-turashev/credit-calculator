@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>База данных клиентов</title>
+    <!-- Страница будет сама обновляться каждые 5 секунд, имитируя реальное время -->
+    <meta http-equiv="refresh" content="5">
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h2>Список всех заявок из SQLite</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>ФИО</th>
+        <th>Телефон</th>
+        <th>Сумма</th>
+        <th>Срок</th>
+        <th>Дата создания</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="client : ${requests}">
+        <td th:text="${client.id}"></td>
+        <td th:text="${client.fullName}"></td>
+        <td th:text="${client.phone}"></td>
+        <td th:text="${client.principal} + ' тг.'"></td>
+        <td th:text="${client.months} + ' мес.'"></td>
+        <td th:text="${#temporals.format(client.requestedAt, 'dd.MM.yyyy HH:mm:ss')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{/}">← Вернуться к калькулятору</a>
+</body>
+</html>
