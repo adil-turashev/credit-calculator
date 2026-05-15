@@ -1,4 +1,4 @@
-package org.example.getstarted;
+package org.example.credit4.getstarted;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

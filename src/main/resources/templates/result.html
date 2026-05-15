@@ -14,13 +14,15 @@
 
 <p>
     <b>Дата и время запроса:</b>
-    <span th:text="${#temporals.format(result.requestedAt, 'dd.MM.yyyy HH:mm:ss.SSSS')}"></span>
+    <span th:text="${#temporals.format(result.requestedAt, 'dd.MM.yyyy HH:mm:ss')}"></span>
 </p>
+
 <p><b>Месячная ставка:</b> <span th:text="${result.monthlyRate}"></span></p>
 <p><b>Ежемесячный платёж:</b> <span th:text="${result.monthlyPayment}"></span></p>
 <p><b>Итого к оплате:</b> <span th:text="${result.totalPaid}"></span></p>
 
 <h3>График платежей</h3>
+
 <table border="1" cellpadding="6" cellspacing="0">
     <thead>
     <tr>
@@ -31,6 +33,7 @@
         <th>Остаток</th>
     </tr>
     </thead>
+
     <tbody>
     <tr th:each="row : ${result.schedule}">
         <td th:text="${row.monthNumber}"></td>
@@ -43,6 +46,18 @@
 </table>
 
 <br>
-<a th:href="@{/}">Назад</a>
+
+<a th:href="@{/calculator}">
+    <button type="button">Назад к калькулятору</button>
+</a>
+
+<a th:href="@{/history}">
+    <button type="button">Моя история</button>
+</a>
+
+<a th:href="@{/}">
+    <button type="button">На главную</button>
+</a>
+
 </body>
 </html>
