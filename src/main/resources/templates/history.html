@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>История расчетов</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f3f3f3; }
+        .status-pending { color: #b7791f; font-weight: bold; }
+        .status-approved { color: green; font-weight: bold; }
+        .status-cancelled { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
+
 <h2>Ваша история расчетов</h2>
 
-<table border="1" cellpadding="6" cellspacing="0">
+<table>
     <thead>
     <tr>
         <th>ID</th>
@@ -18,8 +28,10 @@
         <th>Срок</th>
         <th>Платёж</th>
         <th>Итого</th>
+        <th>Статус</th>
     </tr>
     </thead>
+
     <tbody>
     <tr th:each="req : ${requests}">
         <td th:text="${req.id}"></td>
@@ -30,11 +42,18 @@
         <td th:text="${req.months}"></td>
         <td th:text="${req.monthlyPayment}"></td>
         <td th:text="${req.totalPaid}"></td>
+        <td>
+            <span th:if="${req.status.name() == 'PENDING'}" class="status-pending">Ожидает решения</span>
+            <span th:if="${req.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
+            <span th:if="${req.status.name() == 'CANCELLED'}" class="status-cancelled">Отклонён</span>
+        </td>
     </tr>
     </tbody>
 </table>
 
 <br>
+
 <a th:href="@{/calculator}">Назад к калькулятору</a>
+
 </body>
 </html>

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.credit4.dto.ScheduleDto;
+import org.example.credit4.entity.CreditRequestStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,5 +25,6 @@ public class ResultDto {
     private BigDecimal monthlyPayment;
     private BigDecimal totalPaid;
     private LocalDateTime requestedAt;
+    private CreditRequestStatus status;
     private List<ScheduleDto> schedule;
 }

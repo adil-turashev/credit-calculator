@@ -3,16 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>База данных клиентов</title>
-    <!-- Страница будет сама обновляться каждые 5 секунд, имитируя реальное время -->
-    <meta http-equiv="refresh" content="5">
     <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+
+        .notice {
+            padding: 12px;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .status-pending {
+            color: #b7791f;
+            font-weight: bold;
+        }
+
+        .status-approved {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-cancelled {
+            color: red;
+            font-weight: bold;
+        }
+
+        .decision-row {
+            display: none;
+        }
+
+        .decision-box {
+            background-color: #FBF0DB;
+            text-align: center;
+            padding: 18px;
+        }
+
+        .decision-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
     </style>
 </head>
 <body>
-<h2>Список всех заявок из SQLite</h2>
+
+<h2>Список всех заявок</h2>
+
+<div class="notice" th:if="${pendingCount != null and pendingCount > 0}">
+    Новые заявки ожидают решения: <span th:text="${pendingCount}"></span>
+</div>
 
 <table>
     <thead>
@@ -22,22 +87,83 @@
         <th>Телефон</th>
         <th>Сумма</th>
         <th>Срок</th>
+        <th>Платёж</th>
+        <th>Итого</th>
         <th>Дата создания</th>
+        <th>Статус</th>
+        <th>Действие</th>
     </tr>
     </thead>
+
     <tbody>
-    <tr th:each="client : ${requests}">
-        <td th:text="${client.id}"></td>
-        <td th:text="${client.fullName}"></td>
-        <td th:text="${client.phone}"></td>
-        <td th:text="${client.principal} + ' тг.'"></td>
-        <td th:text="${client.months} + ' мес.'"></td>
-        <td th:text="${#temporals.format(client.requestedAt, 'dd.MM.yyyy HH:mm:ss')}"></td>
-    </tr>
+    <th:block th:each="client : ${requests}">
+        <tr>
+            <td th:text="${client.id}"></td>
+            <td th:text="${client.fullName}"></td>
+            <td th:text="${client.phone}"></td>
+            <td th:text="${client.principal} + ' тг.'"></td>
+            <td th:text="${client.months} + ' мес.'"></td>
+            <td th:text="${client.monthlyPayment}"></td>
+            <td th:text="${client.totalPaid}"></td>
+            <td th:text="${#temporals.format(client.requestedAt, 'dd.MM.yyyy HH:mm:ss')}"></td>
+
+            <td>
+                <span th:if="${client.status.name() == 'PENDING'}" class="status-pending">Ожидает решения</span>
+                <span th:if="${client.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
+                <span th:if="${client.status.name() == 'CANCELLED'}" class="status-cancelled">Отклонён</span>
+            </td>
+
+            <td>
+                <button type="button"
+                        th:if="${client.status.name() == 'PENDING'}"
+                        th:onclick="'toggleDecision(' + ${client.id} + ')'">
+                    Задать решение
+                </button>
+
+                <span th:if="${client.status.name() != 'PENDING'}">
+                    Решение принято
+                </span>
+            </td>
+        </tr>
+
+        <tr class="decision-row" th:id="'decision-' + ${client.id}">
+            <td colspan="10" class="decision-box">
+                <b>Выберите решение по заявке №<span th:text="${client.id}"></span></b>
+
+                <div class="decision-actions">
+                    <form th:action="@{/requests/{id}/approve(id=${client.id})}" method="post">
+                        <button type="submit">Одобрить</button>
+                    </form>
+
+                    <form th:action="@{/requests/{id}/reject(id=${client.id})}" method="post">
+                        <button type="submit">Отклонить</button>
+                    </form>
+
+                    <button type="button" th:onclick="'toggleDecision(' + ${client.id} + ')'">
+                        Закрыть
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </th:block>
     </tbody>
 </table>
 
 <br>
+
 <a th:href="@{/calculator}">← Вернуться к калькулятору</a>
+
+<script>
+    function toggleDecision(id) {
+        const row = document.getElementById('decision-' + id);
+
+        if (row.style.display === 'table-row') {
+            row.style.display = 'none';
+        } else {
+            row.style.display = 'table-row';
+        }
+    }
+</script>
+
 </body>
 </html>

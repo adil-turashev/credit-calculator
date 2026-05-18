@@ -41,4 +41,7 @@ public class CreditRequestEntity {
 
     @Column(name = "user_uuid")
     private String userUuid;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CreditRequestStatus status;
 }

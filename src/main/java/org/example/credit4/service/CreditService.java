@@ -5,6 +5,7 @@ import org.example.credit4.dto.CreditForm;
 import org.example.credit4.dto.ResultDto;
 import org.example.credit4.dto.ScheduleDto;
 import org.example.credit4.entity.CreditRequestEntity;
+import org.example.credit4.entity.CreditRequestStatus;
 import org.example.credit4.entity.ScheduleEntity;
 import org.example.credit4.repository.CreditRequestRepository;
 import org.example.credit4.repository.ScheduleRepository;
@@ -47,6 +48,7 @@ public class CreditService {
                 .totalPaid(BigDecimal.ZERO)
                 .requestedAt(requestedAt)
                 .userUuid(ownerKey)
+                .status(CreditRequestStatus.PENDING)
                 .build();
 
         request = requestRepository.save(request);
@@ -109,8 +111,37 @@ public class CreditService {
                 .monthlyPayment(monthlyPayment)
                 .totalPaid(totalPaid)
                 .requestedAt(requestedAt)
+                .status(request.getStatus())
                 .schedule(scheduleDtos)
                 .build();
+    }
+
+    @Transactional
+    public void approveRequest(Long id) {
+        CreditRequestEntity request = requestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));
+        request.setStatus(CreditRequestStatus.APPROVED);
+        requestRepository.save(request);
+    }
+
+    @Transactional
+    public void rejectRequest(Long id) {
+        CreditRequestEntity request = requestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));
+        request.setStatus(CreditRequestStatus.CANCELLED);
+        requestRepository.save(request);
+    }
+
+    public long getPendingRequestsCount() {
+        return requestRepository.countByStatus(CreditRequestStatus.PENDING);
+    }
+
+    public List<CreditRequestEntity> getAllRequest() {
+        return requestRepository.findAllByOrderByRequestedAtDesc();
+    }
+
+    public List<CreditRequestEntity> getRequestsByOwnerKey(String ownerKey) {
+        return requestRepository.findByUserUuidOrderByRequestedAtDesc(ownerKey);
     }
 
     private BigDecimal calculateMonthlyRate() {
@@ -125,13 +156,5 @@ public class CreditService {
         return principal.multiply(monthlyRate, MATH_CONTEXT)
                 .multiply(pow, MATH_CONTEXT)
                 .divide(pow.subtract(BigDecimal.ONE, MATH_CONTEXT), 2, RoundingMode.HALF_UP);
-    }
-
-    public List<CreditRequestEntity> getAllRequest() {
-        return requestRepository.findAll();
-    }
-
-    public List<CreditRequestEntity> getRequestsByOwnerKey(String ownerKey) {
-        return requestRepository.findByUserUuid(ownerKey);
     }
 }
