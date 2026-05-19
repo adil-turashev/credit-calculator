@@ -28,6 +28,7 @@ public class CreditService {
 
     private final CreditRequestRepository requestRepository;
     private final ScheduleRepository scheduleRepository;
+    private final TelegramBotService telegramBotService;
 
     @Transactional
     public ResultDto calculateAndSave(CreditForm form, String ownerKey) {
@@ -41,6 +42,7 @@ public class CreditService {
         CreditRequestEntity request = CreditRequestEntity.builder()
                 .fullName(form.getFullName().trim())
                 .phone(form.getPhone().trim())
+                .telegramChatId(form.getTelegramChatId().trim())
                 .principal(principal)
                 .months(months)
                 .monthlyRate(monthlyRate)
@@ -122,14 +124,16 @@ public class CreditService {
                 .orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));
         request.setStatus(CreditRequestStatus.APPROVED);
         requestRepository.save(request);
+        telegramBotService.sendNotification(request);
     }
 
     @Transactional
-    public void rejectRequest(Long id) {
+    public void cancelRequest(Long id) {
         CreditRequestEntity request = requestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));
         request.setStatus(CreditRequestStatus.CANCELLED);
         requestRepository.save(request);
+        telegramBotService.sendNotification(request);
     }
 
     public long getPendingRequestsCount() {

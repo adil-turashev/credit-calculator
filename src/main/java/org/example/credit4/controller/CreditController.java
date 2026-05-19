@@ -83,10 +83,10 @@ public class CreditController {
         creditService.approveRequest(id);
         return "redirect:/requests";
     }
-    @PostMapping("/requests/{id}/reject")
+    @PostMapping("/requests/{id}/cancel")
     @PreAuthorize("hasRole('MANAGER')")
-    public String rejectRequest(@PathVariable Long id) {
-        creditService.rejectRequest(id);
+    public String cancelRequest(@PathVariable Long id) {
+        creditService.cancelRequest(id);
         return "redirect:/requests";
     }
     private String resolveOwnerKey(Principal principal, String userId, HttpServletResponse response) {

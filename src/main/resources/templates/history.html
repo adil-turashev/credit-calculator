@@ -45,7 +45,7 @@
         <td>
             <span th:if="${req.status.name() == 'PENDING'}" class="status-pending">Ожидает решения</span>
             <span th:if="${req.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
-            <span th:if="${req.status.name() == 'CANCELLED'}" class="status-cancelled">Отклонён</span>
+            <span th:if="${req.status.name() == 'CANCELLED'}" class="status-rejected">Не одобрен</span>
         </td>
     </tr>
     </tbody>

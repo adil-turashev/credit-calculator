@@ -22,6 +22,12 @@ public class CreditForm {
     )
     private String phone;
 
+    @NotBlank(message = "Введите Telegram Chat ID")
+    @Pattern(
+            regexp = "^-?[0-9]{5,20}$",
+            message = "Telegram Chat ID должен содержать только цифры"
+    )
+    private String telegramChatId;
     @NotNull(message = "Введите сумму кредита")
     @DecimalMin(value = "0.01", message = "Сумма должна быть больше 0")
     private BigDecimal principal;

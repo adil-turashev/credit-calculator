@@ -39,6 +39,9 @@ public class CreditRequestEntity {
     @Column(name = "requested_at")
     private LocalDateTime requestedAt;
 
+    @Column(name = "telegram_chat_id")
+    private String telegramChatId;
+
     @Column(name = "user_uuid")
     private String userUuid;
     @Enumerated(EnumType.STRING)

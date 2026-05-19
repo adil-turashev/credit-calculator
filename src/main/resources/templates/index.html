@@ -68,6 +68,12 @@
     </div>
 
     <div class="row">
+        <label>Telegram Chat ID</label><br>
+        <input type="text" th:field="*{telegramChatId}" placeholder="Например: 123456789">
+        <div class="error" th:if="${#fields.hasErrors('telegramChatId')}" th:errors="*{telegramChatId}"></div>
+    </div>
+
+    <div class="row">
         <label>Сумма кредита</label><br>
         <input type="number" step="0.01" th:field="*{principal}">
         <div class="error" th:if="${#fields.hasErrors('principal')}" th:errors="*{principal}"></div>
@@ -78,6 +84,7 @@
         <input type="number" th:field="*{months}">
         <div class="error" th:if="${#fields.hasErrors('months')}" th:errors="*{months}"></div>
     </div>
+
 
     <button type="submit">Рассчитать</button>
 </form>

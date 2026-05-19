@@ -31,7 +31,7 @@
     <b>Статус заявки:</b>
     <span th:if="${result.status.name() == 'PENDING'}" class="status-pending">Ожидает решения</span>
     <span th:if="${result.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
-    <span th:if="${result.status.name() == 'CANCELLED'}" class="status-cancelled">Отклонён</span>
+    <span th:if="${result.status.name() == 'CANCELLED'}" class="status-cancelled">Не одобрен</span>
 </p>
 
 <p><b>Месячная ставка:</b> <span th:text="${result.monthlyRate}"></span></p>
