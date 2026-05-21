@@ -67,11 +67,6 @@
         <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
     </div>
 
-    <div class="row">
-        <label>Telegram Chat ID</label><br>
-        <input type="text" th:field="*{telegramChatId}" placeholder="Например: 123456789">
-        <div class="error" th:if="${#fields.hasErrors('telegramChatId')}" th:errors="*{telegramChatId}"></div>
-    </div>
 
     <div class="row">
         <label>Сумма кредита</label><br>

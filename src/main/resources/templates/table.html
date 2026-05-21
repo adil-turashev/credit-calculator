@@ -136,9 +136,8 @@
                     </form>
 
                     <form th:action="@{/requests/{id}/cancel(id=${client.id})}" method="post">
-                        <button type="submit">Не одобрять
+                        <button type="submit">Не одобрять</button>
                     </form>
-
                     <button type="button" th:onclick="'toggleDecision(' + ${client.id} + ')'">
                         Закрыть
                     </button>

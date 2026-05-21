@@ -9,6 +9,7 @@ import org.example.credit4.entity.CreditRequestStatus;
 import org.example.credit4.entity.ScheduleEntity;
 import org.example.credit4.repository.CreditRequestRepository;
 import org.example.credit4.repository.ScheduleRepository;
+import org.example.credit4.util.PhoneUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +43,9 @@ public class CreditService {
         CreditRequestEntity request = CreditRequestEntity.builder()
                 .fullName(form.getFullName().trim())
                 .phone(form.getPhone().trim())
-                .telegramChatId(form.getTelegramChatId().trim())
+                .phoneNormalized(PhoneUtils.normalize(form.getPhone()))
                 .principal(principal)
+
                 .months(months)
                 .monthlyRate(monthlyRate)
                 .monthlyPayment(monthlyPayment)
@@ -65,19 +67,15 @@ public class CreditService {
             BigDecimal interest = balance.multiply(monthlyRate, MATH_CONTEXT).setScale(2, RoundingMode.HALF_UP);
             BigDecimal payment = monthlyPayment;
             BigDecimal principalPart = payment.subtract(interest).setScale(2, RoundingMode.HALF_UP);
-
             if (month == months) {
                 principalPart = balance.setScale(2, RoundingMode.HALF_UP);
                 payment = interest.add(principalPart).setScale(2, RoundingMode.HALF_UP);
             }
-
             balance = balance.subtract(principalPart).setScale(2, RoundingMode.HALF_UP);
             if (balance.compareTo(BigDecimal.ZERO) < 0) {
                 balance = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
             }
-
             totalPaid = totalPaid.add(payment).setScale(2, RoundingMode.HALF_UP);
-
             ScheduleEntity scheduleEntity = ScheduleEntity.builder()
                     .request(request)
                     .monthNumber(month)
@@ -114,6 +112,7 @@ public class CreditService {
                 .totalPaid(totalPaid)
                 .requestedAt(requestedAt)
                 .status(request.getStatus())
+                .telegramBotLink(telegramBotService.getBotLink())
                 .schedule(scheduleDtos)
                 .build();
     }
