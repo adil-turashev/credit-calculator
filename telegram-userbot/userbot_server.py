@@ -1,7 +1,7 @@
-
 import asyncio
 import os
 import re
+import threading
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from telethon import TelegramClient
@@ -18,9 +18,8 @@ PORT = int(os.getenv("PORT", "5000"))
 
 app = Flask(__name__)
 
-client = TelegramClient(SESSION_NAME, API_ID, API_HASH)
 loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
+client = TelegramClient(SESSION_NAME, API_ID, API_HASH, loop=loop)
 
 
 def normalize_phone(phone: str) -> str:
@@ -53,7 +52,8 @@ async def send_message_by_phone(phone: str, message: str):
     if not result.users:
         return {
             "ok": False,
-            "error": "Пользователь с таким номером не найден в Telegram или скрыт настройками приватности"
+            "error": "Пользователь с таким номером не найден в Telegram или скрыт настройками приватности",
+            "phone": normalized_phone
         }
 
     user = result.users[0]
@@ -74,7 +74,7 @@ async def send_message_by_phone(phone: str, message: str):
 
 @app.route("/send", methods=["POST"])
 def send():
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if data is None:
         return jsonify({"ok": False, "error": "JSON body is required"}), 400
@@ -85,7 +85,15 @@ def send():
     if not phone or not message:
         return jsonify({"ok": False, "error": "phone and message are required"}), 400
 
-    result = loop.run_until_complete(send_message_by_phone(phone, message))
+    future = asyncio.run_coroutine_threadsafe(
+        send_message_by_phone(phone, message),
+        loop
+    )
+
+    try:
+        result = future.result(timeout=30)
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
     if result.get("ok"):
         return jsonify(result), 200
@@ -98,11 +106,19 @@ def health():
     return jsonify({"ok": True, "service": "telegram-userbot"})
 
 
-async def main():
+async def start_client():
     await client.start(phone=PHONE_NUMBER)
-    print("Userbot logged in as Credit2.0")
-    app.run(host="127.0.0.1", port=PORT)
+    print("Userbot logged in successfully")
+
+
+def start_loop():
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(start_client())
+    loop.run_forever()
 
 
 if __name__ == "__main__":
-    loop.run_until_complete(main())
+    thread = threading.Thread(target=start_loop, daemon=True)
+    thread.start()
+
+    app.run(host="127.0.0.1", port=PORT)
