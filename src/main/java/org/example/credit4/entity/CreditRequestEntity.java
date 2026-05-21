@@ -22,6 +22,12 @@ public class CreditRequestEntity {
     private String fullName;
     private String phone;
 
+    @Column(name = "phone_normalized")
+    private String phoneNormalized;
+
+    @Column(name = "telegram_chat_id")
+    private String telegramChatId;
+
     @Column(precision = 19, scale = 2, nullable = false)
     private BigDecimal principal;
 

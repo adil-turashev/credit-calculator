@@ -26,5 +26,6 @@ public class ResultDto {
     private BigDecimal totalPaid;
     private LocalDateTime requestedAt;
     private CreditRequestStatus status;
+    private String telegramBotLink;
     private List<ScheduleDto> schedule;
 }

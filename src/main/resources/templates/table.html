@@ -110,7 +110,7 @@
             <td>
                 <span th:if="${client.status.name() == 'PENDING'}" class="status-pending">Ожидает решения</span>
                 <span th:if="${client.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
-                <span th:if="${client.status.name() == 'CANCELLED'}" class="status-cancelled">Отклонён</span>
+                <span th:if="${client.status.name() == 'CANCELLED'}" class="status-cancelled">Не одобрен</span>
             </td>
 
             <td>
@@ -135,10 +135,9 @@
                         <button type="submit">Одобрить</button>
                     </form>
 
-                    <form th:action="@{/requests/{id}/reject(id=${client.id})}" method="post">
-                        <button type="submit">Отклонить</button>
+                    <form th:action="@{/requests/{id}/cancel(id=${client.id})}" method="post">
+                        <button type="submit">Не одобрять</button>
                     </form>
-
                     <button type="button" th:onclick="'toggleDecision(' + ${client.id} + ')'">
                         Закрыть
                     </button>

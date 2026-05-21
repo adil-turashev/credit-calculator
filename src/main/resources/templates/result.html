@@ -31,9 +31,17 @@
     <b>Статус заявки:</b>
     <span th:if="${result.status.name() == 'PENDING'}" class="status-pending">Ожидает решения</span>
     <span th:if="${result.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
-    <span th:if="${result.status.name() == 'CANCELLED'}" class="status-cancelled">Отклонён</span>
+    <span th:if="${result.status.name() == 'CANCELLED'}" class="status-cancelled">Не одобрен</span>
 </p>
+<div th:if="${result.telegramBotLink != null}">
+    <p>
+        Чтобы получить уведомление о решении менеджера, откройте Telegram-бота и подтвердите номер телефона.
+    </p>
 
+    <a th:href="${result.telegramBotLink}" target="_blank">
+        <button type="button">Подключить Telegram</button>
+    </a>
+</div>
 <p><b>Месячная ставка:</b> <span th:text="${result.monthlyRate}"></span></p>
 <p><b>Ежемесячный платёж:</b> <span th:text="${result.monthlyPayment}"></span></p>
 <p><b>Итого к оплате:</b> <span th:text="${result.totalPaid}"></span></p>

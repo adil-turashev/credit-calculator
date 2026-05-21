@@ -1,0 +1,1 @@
+ALTER TABLE credit_requests ADD COLUMN phone_normalized VARCHAR(30);

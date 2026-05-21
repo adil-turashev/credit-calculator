@@ -17,11 +17,12 @@ public class CreditForm {
 
     @NotBlank(message = "Введите номер телефона")
     @Pattern(
-            regexp = "^\\+?[0-9]{10,15}$",
-            message = "Телефон должен содержать 10-15 цифр, можно с +"
+            regexp = "^\\+?[0-9\\s\\-()]{10,25}$",
+            message = "Введите корректный номер телефона"
     )
     private String phone;
 
+    private String telegramChatId;
     @NotNull(message = "Введите сумму кредита")
     @DecimalMin(value = "0.01", message = "Сумма должна быть больше 0")
     private BigDecimal principal;

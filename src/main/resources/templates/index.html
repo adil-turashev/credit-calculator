@@ -67,6 +67,7 @@
         <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
     </div>
 
+
     <div class="row">
         <label>Сумма кредита</label><br>
         <input type="number" step="0.01" th:field="*{principal}">
@@ -78,6 +79,7 @@
         <input type="number" th:field="*{months}">
         <div class="error" th:if="${#fields.hasErrors('months')}" th:errors="*{months}"></div>
     </div>
+
 
     <button type="submit">Рассчитать</button>
 </form>
